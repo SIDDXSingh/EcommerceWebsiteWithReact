@@ -6,50 +6,43 @@ import {useState} from "react";
 import styles from "./ProductList.module.css";
 
 
-var prodLis=[
-    {
-        title: "Product1",
-        price:"100",
-    },
-    {
-        title:"Product2",
-        price:"100",
-    },
-    {
-        title:"Product3",
-        price:"100",
-    },
-    {
-        title:"Product4",
-        price:"100",
-    },
-    {
-        title:"Product5",
-        price:"100",
-    }
-]
 
-function getProductsApi(callback)
-{
-    console.log("API called");
-    setTimeout(()=>{callback(prodLis)},3000);
-}
+
 
 
 function ProductList()
 {
     const[isLoading,setIsLoading]=useState(true);
-    const[prodLis,setProdLis]=useState([]); //prodLis is a state variable and setProdLis is a function to set the state variable
-    useEffect(()=>{getProductsApi((prodLis)=>{setIsLoading(false);
-                                    setProdLis(prodLis)})},[]);
+    const[error,setError]=useState(null);
+    const[prodLis,setProdLis]=useState([]); 
+    //prodLis is a state variable and setProdLis is a function to set the state variable
+    // useEffect(()=>{getProductsApi((prodLis)=>{setIsLoading(false);
+    //                                 setProdLis(prodLis)})},[]);
 
 
-    if(isLoading)
+
+
+    useEffect(()=>{fetch("http://localhost:3001/prodLis")
+    .then((res)=>res.json())
+    .then(result=>{setIsLoading(false);
+                  setProdLis(result)})
+    .catch((err)=>{setError(err);})},[]);
+    
+         
+
+    if(error)
+    {
+        return (<div>
+            something is wrong
+        </div>);
+    }
+
+    else if(isLoading)
     {
         
         return <div>
             <>Loading</>
-            </div>
+            </div>;
 
     }
     else{
